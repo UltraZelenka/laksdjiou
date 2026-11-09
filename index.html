@@ -1,0 +1,58 @@
+<div class="terminal">
+        <div class="terminal-header">АРХИВ КГБ / УПРАВЛЕНИЕ ГО СССР / ДЕШИФРАТОР СВЯЗИ</div>
+        <div class="terminal-body" id="log-container">
+            <!-- Сюда добавляются строки -->
+            <span class="cursor" id="term-cursor"></span>
+        </div>
+    </div>
+
+    <script>
+        const dialogue = [
+            { type: "system", text: "[ТЕЛЕФОННАЯ ЗАПИСЬ — ГРАЖДАНСКАЯ ОБОРОНА СССР]", delay: 1500 },
+            { type: "speech", name: "ДИСПЕТЧЕР", text: "Гражданская оборона. Что у вас случилось?", delay: 1500 },
+            { type: "speech", name: "ЗВОНИВШИЙ", text: "Алло! Тут метромост рухнул! Прямо в реку ушел, вагоны в воде! Люди орут, мы подойти не можем, тут обрывы кругом!", delay: 3500 },
+            { type: "speech", name: "ДИСПЕТЧЕР", text: "Какой берег? Левый или правый? Где вы стоите?", delay: 2000 },
+            { type: "speech", name: "ЗВОНИВШИЙ", text: "Правый, правый! Ближе к Речному вокзалу, тут набережная! Вода... вода какая-то не такая. Мутная очень, и в ней шевелится что-то... здоровое. Мы мужика тащили, а оно из-под обломков его за ногу—", delay: 5500 },
+            { type: "system", text: "[Резкий треск, грохот, скрежет металла. Несколько секунд сильных помех.]", delay: 3500 },
+            { type: "speech", name: "ЗВОНИВШИЙ", text: "<span class='audio-effect'>(тяжело дышит, шепотом)</span> Алло?.. Люська, отойди от края... Алло! Он не дышит. Оно его утащило...", delay: 4000 },
+            { type: "system", text: "[СВЯЗЬ ОБОРВАНА. КОРОТКИЕ ГУДКИ...]", delay: 2500 },
+            { type: "system", text: "[ПЕРЕКЛЮЧЕНИЕ НА ВНУТРЕННЮЮ ЛИНИЮ]", delay: 2000 },
+            { type: "speech", name: "ОПЕРАТОР", text: "Поднимай дежурную смену и весь начсостав. Офицеров из дома выдергивай, живо. У нас обрушение метромоста, правый берег, район Речного. Зафиксировано сильное загрязнение Оби, возможна биологическая угроза. Объявляй общий сбор. Из расположения — ни одной машины без моего личного приказа.", delay: 6500 },
+            { type: "speech", name: "СОТРУДНИК", text: "Что там? Диверсия? На \"Комбинате\" что-то рвануло?", delay: 2500 },
+            { type: "speech", name: "ОПЕРАТОР", text: "Хрен его знает. Собирай людей, некогда.", delay: 2000 },
+            { type: "system", text: "[КОНЕЦ ЗАПИСИ // СЕКТОР БЛОКИРОВАН]", delay: 0 }
+        ];
+
+        const container = document.getElementById('log-container');
+        const cursor = document.getElementById('term-cursor');
+        let index = 0;
+
+        function renderNextLine() {
+            if (index < dialogue.length) {
+                const current = dialogue[index];
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'line';
+
+                if (current.type === "system") {
+                    // Красный системный тег
+                    lineDiv.innerHTML = <span class="system-tag">${current.text}</span>;
+                } else if (current.type === "speech") {
+                    // Имя в скобках + текст
+                    lineDiv.innerHTML = <span class="sender">(${current.name}):</span> ${current.text};
+                }
+
+                // Вставляем строку перед курсором и скроллим вниз
+                container.insertBefore(lineDiv, cursor);
+                container.scrollTop = container.scrollHeight;
+
+                // Переходим к следующей реплике с индивидуальной задержкой
+                index++;
+                setTimeout(renderNextLine, current.delay);
+            }
+        }
+
+        // Старт симуляции через 1.2 секунды после открытия страницы
+        setTimeout(renderNextLine, 1200);
+    </script>
+</body>
+</html>
